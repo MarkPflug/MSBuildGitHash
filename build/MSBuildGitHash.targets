@@ -1,30 +1,56 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  
-<Target Name="GetGitHash" BeforeTargets="WriteGitHash" Condition="'$(BuildHash)' == ''">
-  <PropertyGroup>
-    <VerFile>$(IntermediateOutputPath)gitver</VerFile>
-  </PropertyGroup>
-  <Exec Command="git -C $(ProjectDir) describe --long --always --dirty &gt; $(VerFile)" />
-  <ReadLinesFromFile File="$(VerFile)">
-    <Output TaskParameter="Lines" ItemName="GitVersion" />
-  </ReadLinesFromFile><PropertyGroup>
-    <BuildHash>@(GitVersion)</BuildHash>
-  </PropertyGroup>    
-</Target>
+  <Target Name="GetGitHash" BeforeTargets="WriteGitHash" Condition="'$(BuildHash)' == ''">
 
-<Target Name="WriteGitHash" BeforeTargets="CoreCompile">
-  <PropertyGroup>
-    <CustomAssemblyInfoFile>$(IntermediateOutputPath)CustomAssemblyInfo.cs</CustomAssemblyInfoFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="$(CustomAssemblyInfoFile)" />
-  </ItemGroup>
-  <ItemGroup>
-    <AssemblyAttributes Include="AssemblyMetadata">
-      <_Parameter1>GitHash</_Parameter1>
-      <_Parameter2>$(BuildHash)</_Parameter2>
-    </AssemblyAttributes>
-  </ItemGroup>
-  <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
-</Target>
+    <PropertyGroup>
+      <MSBuildGitHashVersionFile>$(IntermediateOutputPath)gitversion</MSBuildGitHashVersionFile>
+    </PropertyGroup>
 
+    <Exec Command="$(MSBuildGitHashCommand) &gt; $(MSBuildGitHashVersionFile)" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="MSBuildGitHashExitCode" />
+    </Exec>
+
+    <Error 
+      Condition="'$(MSBuildGitHashExitCode)' != '0'" 
+      Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
+    />
+
+    <ReadLinesFromFile File="$(MSBuildGitHashVersionFile)">
+      <Output TaskParameter="Lines" ItemName="GitVersion" />
+    </ReadLinesFromFile>
+
+    <PropertyGroup>
+      <MSBuildGitHashValue>@(GitVersion)</MSBuildGitHashValue>
+      <MSBuildGitHashValueLength>$(MSBuildGitHashValue.Length)</MSBuildGitHashValueLength>
+      <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &lt;= 32">$(MSBuildGitHashValue)</MSBuildGitHashValueStart>
+      <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &gt; 32">$(MSBuildGitHashValue.Substring(0,32))</MSBuildGitHashValueStart>
+      <MSBuildGitHashRegexMatch>$([System.Text.RegularExpressions.Regex]::IsMatch($(MSBuildGitHashValue), $(MSBuildGitHashValidateRegex)))</MSBuildGitHashRegexMatch>
+    </PropertyGroup>
+
+    <Error 
+      Condition="'$(MSBuildGitHashValidate)' == 'True' And ($(MSBuildGitHashValueLength) &gt; $(MSBuildGitHashValidateLength) Or '$(MSBuildGitHashRegexMatch)' != 'True')" 
+      Text="MSBuildGitHash hash value starting with '$(MSBuildGitHashValueStart)' was invalid." 
+    />
+
+  </Target>
+
+  <Target Name="WriteGitHash" BeforeTargets="CoreCompile">
+
+    <PropertyGroup>
+      <MSBuildGitHashAssemblyInfoFile>$(IntermediateOutputPath)MSBuildGitHashAssemblyInfo.cs</MSBuildGitHashAssemblyInfoFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="$(MSBuildGitHashAssemblyInfoFile)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AssemblyAttributes Include="AssemblyMetadata">
+        <_Parameter1>GitHash</_Parameter1>
+        <_Parameter2>$(MSBuildGitHashValue)</_Parameter2>
+      </AssemblyAttributes>
+    </ItemGroup>
+
+    <WriteCodeFragment Language="C#" OutputFile="$(MSBuildGitHashAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
+
+  </Target>
 </Project>

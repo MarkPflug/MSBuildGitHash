@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MSBuildGitHash</id>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <authors>Mark Pflug</authors>
     <owners>Mark Pflug</owners>
     <!--<licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>

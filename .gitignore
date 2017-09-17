@@ -286,3 +286,8 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# windows exectuables and libs
+*.exe
+*.com
+*.dll
