@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MSBuildGitHash</id>
+    <version>0.1.0</version>
+    <authors>Mark Pflug</authors>
+    <owners>Mark Pflug</owners>
+    <!--<licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>-->
+    <iconUrl>https://markpflug.github.io/MarkPflug.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MSBuild targets for compiling a Git repository hash into .NET assemblies.</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>MSBuild Git</tags>
+  </metadata>
+
+  <files>
+    <file src="build\**" target="build" />
+  </files>
+</package>

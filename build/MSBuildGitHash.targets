@@ -1,0 +1,30 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  
+<Target Name="GetGitHash" BeforeTargets="WriteGitHash" Condition="'$(BuildHash)' == ''">
+  <PropertyGroup>
+    <VerFile>$(IntermediateOutputPath)gitver</VerFile>
+  </PropertyGroup>
+  <Exec Command="git -C $(ProjectDir) describe --long --always --dirty &gt; $(VerFile)" />
+  <ReadLinesFromFile File="$(VerFile)">
+    <Output TaskParameter="Lines" ItemName="GitVersion" />
+  </ReadLinesFromFile><PropertyGroup>
+    <BuildHash>@(GitVersion)</BuildHash>
+  </PropertyGroup>    
+</Target>
+
+<Target Name="WriteGitHash" BeforeTargets="CoreCompile">
+  <PropertyGroup>
+    <CustomAssemblyInfoFile>$(IntermediateOutputPath)CustomAssemblyInfo.cs</CustomAssemblyInfoFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(CustomAssemblyInfoFile)" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttributes Include="AssemblyMetadata">
+      <_Parameter1>GitHash</_Parameter1>
+      <_Parameter2>$(BuildHash)</_Parameter2>
+    </AssemblyAttributes>
+  </ItemGroup>
+  <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
+</Target>
+
+</Project>
