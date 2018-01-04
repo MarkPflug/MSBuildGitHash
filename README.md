@@ -2,6 +2,10 @@
 Includes the Git repository hash in your compiled .NET assemblies. 
 This allows you to easily correlate an assembly to exact version of the code that produced it.
 
+## Nuget
+
+This project is available as a nuget package: https://www.nuget.org/packages/MSBuildGitHash.
+
 ## Usage
 By default, including the nuget package (MSBuildGitHash) will automatically add the git repository hash to your assembly as a `System.Reflection.AssemblyMetadataAttribute` with they key "GitHash". As of 0.3.0, you can optionally include the remote repository URL as well, typically this would be "origin". The repository URL will be attached with the key "GitRepository". To include the repository URL, you must specify the name of the git remote in your project file:
 
