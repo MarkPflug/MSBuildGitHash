@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MSBuildGitHash</id>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <authors>Mark Pflug</authors>
     <owners>Mark Pflug</owners>
     <licenseUrl>https://github.com/MarkPflug/MSBuildGitHash/blob/master/LICENSE</licenseUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MSBuild targets for compiling a Git repository hash into .NET assemblies.</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2017</copyright>
+    <copyright>Copyright 2018</copyright>
     <tags>MSBuild Git</tags>
   </metadata>
 
