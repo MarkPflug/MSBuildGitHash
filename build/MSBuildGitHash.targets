@@ -15,7 +15,7 @@
     </Exec>
 
     <Error 
-      Condition="'$(MSBuildGitHashExitCode)' != '0'" 
+      Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashExitCode)' != '0'" 
       Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
     />
 
@@ -28,7 +28,7 @@
     </Exec>
 
     <Error 
-      Condition="'$(MSBuildGitHashRemote)' != '' and '$(MSBuildGitRemoteExitCode)' != '0'" 
+      Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashRemote)' != '' and '$(MSBuildGitRemoteExitCode)' != '0'" 
       Text="MSBuildGitHash error executing command $(MSBuildGitHashRemoteCommand) returned error code $(MSBuildGitRemoteExitCode)"
     />
 
