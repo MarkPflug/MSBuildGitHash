@@ -4,6 +4,5 @@
         <MSBuildGitHashValidate>True</MSBuildGitHashValidate>
         <MSBuildGitHashValidateLength>32</MSBuildGitHashValidateLength>
         <MSBuildGitHashValidateRegex>^[0-9A-Fa-f]{4,32}(-dirty|-broken)%3F%24</MSBuildGitHashValidateRegex>
-        <MSBuildGitHashRemote></MSBuildGitHashRemote>
     </PropertyGroup>
 </Project>

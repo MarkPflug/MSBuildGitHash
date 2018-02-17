@@ -5,6 +5,9 @@
       <MSBuildGitHashVersionFile>$(IntermediateOutputPath)gitversion</MSBuildGitHashVersionFile>
       <MSBuildGitHashRemoteFile>$(IntermediateOutputPath)gitremote</MSBuildGitHashRemoteFile>
       <MSBuildGitHashRemoteCommand>git remote get-url $(MSBuildGitHashRemote)</MSBuildGitHashRemoteCommand>
+      <MSBuildGitRepository 
+        Condition="'$(MSBuildGitRepository)' == '' And '$(RepositoryType)' == 'git' And '$(RepositoryUrl)' != ''"
+      >$(RepositoryUrl)</MSBuildGitRepository>
     </PropertyGroup>
 
     <Exec 
@@ -20,7 +23,7 @@
     />
 
     <Exec
-      Condition="'$(MSBuildGitHashRemote)' != ''"
+      Condition="'$(MSBuildGitHashRemote)' != '' And '$(MSBuildGitRepository)' == ''"
       Command="$(MSBuildGitHashRemoteCommand) &gt; $(MSBuildGitHashRemoteFile)" 
       IgnoreExitCode="true"
     >
@@ -28,7 +31,7 @@
     </Exec>
 
     <Error 
-      Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashRemote)' != '' and '$(MSBuildGitRemoteExitCode)' != '0'" 
+      Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashRemote)' != '' And '$(MSBuildGitRemoteExitCode)' != '0'" 
       Text="MSBuildGitHash error executing command $(MSBuildGitHashRemoteCommand) returned error code $(MSBuildGitRemoteExitCode)"
     />
 
@@ -37,15 +40,15 @@
     </ReadLinesFromFile>
 
     <ReadLinesFromFile 
-      Condition="'$(MSBuildGitHashRemote)' != ''"
+      Condition="'$(MSBuildGitHashRemote)' != '' And '$(MSBuildGitRepository)' == '' And Exists('$(MSBuildGitHashRemoteFile)')"
       File="$(MSBuildGitHashRemoteFile)" 
     >
       <Output TaskParameter="Lines" ItemName="GitRemote" />
     </ReadLinesFromFile>
 
     <PropertyGroup>
-      <MSBuildGitHashValue>@(GitVersion)</MSBuildGitHashValue>
-      <MSBuildGitRepository>@(GitRemote)</MSBuildGitRepository>
+      <MSBuildGitHashValue Condition="'$(MSBuildGitHashValue)' == ''">@(GitVersion)</MSBuildGitHashValue>
+      <MSBuildGitRepository Condition="'$(MSBuildGitRepository)' == ''">@(GitRemote)</MSBuildGitRepository>
       <MSBuildGitHashValueLength>$(MSBuildGitHashValue.Length)</MSBuildGitHashValueLength>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &lt;= 32">$(MSBuildGitHashValue)</MSBuildGitHashValueStart>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &gt; 32">$(MSBuildGitHashValue.Substring(0,32))</MSBuildGitHashValueStart>
