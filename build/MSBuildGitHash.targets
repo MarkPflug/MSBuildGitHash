@@ -65,7 +65,11 @@
   <Target Name="WriteGitHash" BeforeTargets="CoreCompile">
 
     <PropertyGroup>
-      <MSBuildGitHashAssemblyInfoFile>$(IntermediateOutputPath)MSBuildGitHashAssemblyInfo.cs</MSBuildGitHashAssemblyInfoFile>
+      <LanguageExt Condition="'$(Language)' == 'C#'">.cs</LanguageExt>
+      <LanguageExt Condition="'$(Language)' == 'VB'">.vb</LanguageExt>
+      <CodeGenLanguage Condition="'$(Language)' == 'C#'">C#</CodeGenLanguage>
+      <CodeGenLanguage Condition="'$(Language)' == 'VB'">VisualBasic</CodeGenLanguage>
+      <MSBuildGitHashAssemblyInfoFile>$(IntermediateOutputPath)MSBuildGitHashAssemblyInfo$(LanguageExt)</MSBuildGitHashAssemblyInfoFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -84,7 +88,7 @@
       </AssemblyAttributes>
     </ItemGroup>
 
-    <WriteCodeFragment Language="C#" OutputFile="$(MSBuildGitHashAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
+    <WriteCodeFragment Language="$(CodeGenLanguage)" OutputFile="$(MSBuildGitHashAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
 
   </Target>
 </Project>
