@@ -13,8 +13,8 @@
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>MSBuild Git</tags>
+    <repository type="git" url="https://github.com/MarkPflug/MSBuildGitHash"/>
   </metadata>
-
   <files>
     <file src="build\**" target="build" />
   </files>
