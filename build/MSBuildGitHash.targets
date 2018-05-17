@@ -77,14 +77,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AssemblyAttributes Include="AssemblyMetadata">
+      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(MSBuildGitHashHashAssemblyAttribute)' == ''">
         <_Parameter1>GitHash</_Parameter1>
         <_Parameter2>$(MSBuildGitHashValue)</_Parameter2>
       </AssemblyAttributes>
-
-      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(MSBuildGitRepository)' != ''">
+      <AssemblyAttributes Include="$(MSBuildGitHashHashAssemblyAttribute)" Condition="'$(MSBuildGitHashHashAssemblyAttribute)' != ''">
+        <_Parameter1>$(MSBuildGitHashValue)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(MSBuildGitRepository)' != ''  And '$(MSBuildGitHashRepoAssemblyAttribute)' == ''">
         <_Parameter1>GitRepository</_Parameter1>
         <_Parameter2>$(MSBuildGitRepository)</_Parameter2>
+      </AssemblyAttributes>
+       <AssemblyAttributes Include="$(MSBuildGitHashRepoAssemblyAttribute)" Condition="'$(MSBuildGitRepository)' != ''  And '$(MSBuildGitHashRepoAssemblyAttribute)' != ''">
+        <_Parameter1>$(MSBuildGitRepository)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
 

@@ -20,6 +20,14 @@ Alternately, you can hard-code the repository URL by defining the `MSBuildGitRep
 
 Basic validation is performed on the generated hash version to ensure that a git command error doesn't result in a bad value being attached. If the validation causes problems for some reason, it can be disabled by defining the `<MSBuildGitHashValidate>False</MSBuildGitHashValidate>` in your project.
 
+Starting with version 0.4.0 you can change the default assembly attributes used to store git repo url and commit hash by using:
+```xml
+<PropertyGroup>
+...
+<MSBuildGitHashHashAssemblyAttribute>AssemblyInformationalVersion</MSBuildGitHashHashAssemblyAttribute>
+<MSBuildGitHashRepoAssemblyAttribute>AssemblyCompany</MSBuildGitHashRepoAssemblyAttribute>
+</PropertyGroup>
+```
 ## Version History
 
 _0.3.0_
