@@ -1,0 +1,29 @@
+﻿<Project DefaultTargets="Pack" Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.0</TargetFrameworks>
+    <PackageId>MSBuildGitHash</PackageId>
+    <PackageVersion>0.3.0</PackageVersion>
+    <VersionPrefix>0.3.0</VersionPrefix>
+    <PackageProjectUrl>https://github.com/MarkPflug/MSBuildGitHash</PackageProjectUrl>
+    <PackageIconUrl>https://markpflug.github.io/MarkPflug.png</PackageIconUrl>
+    <PackageLicenseUrl>https://github.com/MarkPflug/MSBuildGitHash/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>MSBuild Git</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/MarkPflug/MSBuildGitHash</RepositoryUrl>
+    <Authors>Mark Pflug</Authors>
+    <Title>MSBuildGitHash</Title>
+    <Summary>Embeds the git repository hash in your assembly.</Summary>
+    <Description>MSBuild targets for compiling a Git repository hash into .NET assemblies.</Description>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
+    <Copyright>Copyright © Mark Pflug 2018</Copyright>
+    <PackageTags>msbuild git hash version</PackageTags>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="build\*" PackagePath="build\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
