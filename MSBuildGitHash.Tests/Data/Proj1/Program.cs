@@ -1,12 +1,8 @@
-﻿using System;
-namespace Proj
+﻿static class Program
 {
-    class Program
+    static void Main()
     {
-        public static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, world");
-        }
+        System.Console.WriteLine("Hello, world");
     }
 }
 

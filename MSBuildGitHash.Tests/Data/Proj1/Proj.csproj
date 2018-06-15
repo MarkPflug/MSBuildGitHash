@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<BuildRoot>../../../../../../MSBuildGitHash/Build/</BuildRoot>
+		<BuildRoot>../../../MSBuildGitHash/Build/</BuildRoot>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 

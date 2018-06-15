@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-
+    <TargetFramework>net461</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -20,5 +19,15 @@
     <Content Include="Data\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  
+  
+  <ItemGroup>
+    <Content Remove="Data\*\bin\**" />
+    <EmbeddedResource Remove="Data\*\bin\**" />
+    <None Remove="Data\*\bin\**" />
+    <Content Remove="Data\*\obj\**" />
+    <EmbeddedResource Remove="Data\*\obj\**" />
+    <None Remove="Data\*\obj\**" />
   </ItemGroup>
 </Project>
