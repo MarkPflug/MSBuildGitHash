@@ -1,9 +1,10 @@
 ﻿<Project DefaultTargets="Pack" Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <!-- we don't compile anything, this is just to satisfy the VS project system -->
     <TargetFrameworks>netstandard1.0</TargetFrameworks>
     <PackageId>MSBuildGitHash</PackageId>
-    <PackageVersion>0.3.0</PackageVersion>
-    <VersionPrefix>0.3.0</VersionPrefix>
+    <PackageVersion>0.4.0</PackageVersion>
+    <VersionPrefix>0.4.0</VersionPrefix>
     <PackageProjectUrl>https://github.com/MarkPflug/MSBuildGitHash</PackageProjectUrl>
     <PackageIconUrl>https://markpflug.github.io/MarkPflug.png</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/MarkPflug/MSBuildGitHash/blob/master/LICENSE</PackageLicenseUrl>

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Common.props"/>
+  <Import Project="$(MSBuildGitHashProps)"/>
+  
+  <PropertyGroup>
+    <RepositoryUrl>https://github.com/MarkPflug/MSBuildGitHash</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <TargetFramework>net461</TargetFramework>
+    <Version>3.2.1</Version>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Program.cs"/>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildGitHashTargets)"/>
+</Project>

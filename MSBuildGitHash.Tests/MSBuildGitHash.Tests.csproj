@@ -16,11 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Data\**\*" />
-    <Content Include="Data\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  
+    <None Include="Data\**\*" />
+  </ItemGroup>  
   
   <ItemGroup>
     <Content Remove="Data\*\bin\**" />
@@ -30,4 +27,5 @@
     <EmbeddedResource Remove="Data\*\obj\**" />
     <None Remove="Data\*\obj\**" />
   </ItemGroup>
+
 </Project>

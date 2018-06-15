@@ -1,8 +1,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <MSBuildGitHashCommand>git describe --long --always --dirty</MSBuildGitHashCommand>
-        <MSBuildGitHashValidate>True</MSBuildGitHashValidate>
-        <MSBuildGitHashValidateLength>32</MSBuildGitHashValidateLength>
-        <MSBuildGitHashValidateRegex>^[0-9A-Fa-f]{4,32}(-dirty|-broken)%3F%24</MSBuildGitHashValidateRegex>
-    </PropertyGroup>
+  <PropertyGroup>
+    <MSBuildGitHashCommand>git describe --long --always --dirty</MSBuildGitHashCommand>
+    <MSBuildGitHashValidate>True</MSBuildGitHashValidate>
+    <MSBuildGitHashValidateLength>32</MSBuildGitHashValidateLength>
+    <MSBuildGitHashValidateRegex>^[0-9A-Fa-f]{4,32}(-dirty|-broken)%3F%24</MSBuildGitHashValidateRegex>
+  </PropertyGroup>
 </Project>

@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -70,9 +72,21 @@ public class MSBuildGitHashTests
 		return outputPath;
 	}
 
+	const string InfoVersionPattern = @"^\d+.\d+.\d+\+[0-9a-f]{7}(-dirty)?$";
+
 	[Fact]
-	public void BuildTest()
+	public void SdkProjectTest()
 	{
-		var exepath = BuildProject("../../../Data/Proj1/Proj.csproj");
+		var exepath = BuildProject("../../../Data/Sdk1/Proj.csproj");
+		var v = FileVersionInfo.GetVersionInfo(exepath).ProductVersion;
+		Assert.Matches(InfoVersionPattern, v);
+	}
+
+	[Fact]
+	public void LegacyProjectTest()
+	{
+		var exepath = BuildProject("../../../Data/Legacy1/Proj.csproj");
+		var v = FileVersionInfo.GetVersionInfo(exepath).ProductVersion;
+		Assert.Matches(InfoVersionPattern, v);
 	}
 }
