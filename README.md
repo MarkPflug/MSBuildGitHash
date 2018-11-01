@@ -22,7 +22,7 @@ Basic validation is performed on the generated hash version to ensure that a git
 
 ## Customization
 
-By default, the package will include the output of the command `git descibe --long --always --dirty`. This produces a truncation (first 8 hex characters) of the full repository hash. You can customize the command that is executed by defining the `MSBuildGitHashCommand` property in your .csproj file. For example, if you want to include the full hash, you can add the following:
+By default, the package will include the output of the command `git describe --long --always --dirty`. This produces a truncation (first 8 hex characters) of the full repository hash. You can customize the command that is executed by defining the `MSBuildGitHashCommand` property in your .csproj file. For example, if you want to include the full hash, you can add the following:
 
 ```xml
 <PropertyGroup>
