@@ -11,6 +11,16 @@ By default, including the nuget package (MSBuildGitHash) will automatically add 
 
 Basic validation is performed on the generated hash version to ensure that a git command error doesn't result in a bad value being attached. If the validation causes problems for some reason, it can be disabled by defining the `<MSBuildGitHashValidate>False</MSBuildGitHashValidate>` in your project.
 
+## Customization
+
+By default, the package will include the output of the command `git describe --long --always --dirty`. This produces a truncation (first 8 hex characters) of the full repository hash. You can customize the command that is executed by defining the `MSBuildGitHashCommand` property in your .csproj file. For example, if you want to include the full hash, you can add the following:
+
+```xml
+<PropertyGroup>
+  <MSBuildGitHashCommand>git rev-parse HEAD</MSBuildGitHashCommand>
+</PropertyGroup>
+```
+
 ## Version History
 
 _0.4.0_
