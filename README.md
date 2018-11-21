@@ -22,6 +22,9 @@ By default, the package will include the output of the command `git describe --l
 ```
 
 ## Version History
+_0.4.1_
+- No functional change.
+- Minor build script cleanup.
 
 _0.4.0_
 - Adds an AssemblyInformationalVersion attribute containing the git version. This value shows up in the standard Windows properties dialog.
