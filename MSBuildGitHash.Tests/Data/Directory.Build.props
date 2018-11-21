@@ -1,0 +1,8 @@
+﻿<Project>
+	<PropertyGroup>
+		<BuildRoot>$(MSBuildThisFileDirectory)../../MSBuildGitHash/Build/</BuildRoot>
+    <MSBuildGitHashProps>$(BuildRoot)MSBuildGitHash.props</MSBuildGitHashProps>
+    <MSBuildGitHashTargets>$(BuildRoot)MSBuildGitHash.targets</MSBuildGitHashTargets>
+	</PropertyGroup>
+
+</Project>
