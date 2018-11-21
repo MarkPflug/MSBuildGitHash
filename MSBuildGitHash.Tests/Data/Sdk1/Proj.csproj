@@ -1,6 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(MSBuildGitHashProps)"/>
-  
   <PropertyGroup>
     <RepositoryUrl>https://github.com/MarkPflug/MSBuildGitHash</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -12,6 +10,4 @@
   <ItemGroup>
     <Compile Include="..\Program.cs"/>
   </ItemGroup>
-
-  <Import Project="$(MSBuildGitHashTargets)"/>
 </Project>

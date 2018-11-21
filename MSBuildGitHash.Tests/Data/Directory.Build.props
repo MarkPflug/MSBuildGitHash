@@ -5,4 +5,7 @@
     <MSBuildGitHashTargets>$(BuildRoot)MSBuildGitHash.targets</MSBuildGitHashTargets>
   </PropertyGroup>
 
+  <Import Project="$(MSBuildGitHashProps)"/>
+
+  <Import Project="$(MSBuildGitHashTargets)"/>
 </Project>
