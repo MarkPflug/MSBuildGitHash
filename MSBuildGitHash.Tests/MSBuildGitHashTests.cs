@@ -1,22 +1,40 @@
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Logging;
+using Microsoft.Build.Locator;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Xunit;
 using Xunit.Abstractions;
 
+class MsBuildFixture : IDisposable
+{
+	public MsBuildFixture()
+	{
+		MSBuildLocator.RegisterDefaults();
+	}
+
+	public void Dispose()
+	{
+		MSBuildLocator.Unregister();
+	}
+}
+
+[CollectionDefinition("MSBuild")]
+public class MSBuildCollection : ICollectionFixture<MsBuildFixture>
+{
+}
+
+[Collection("MSBuild")]
 public class MSBuildGitHashTests
 {
-	ILogger logger;
+	readonly ILogger logger;
 	ITestOutputHelper o;
 
-	static Dictionary<string, string> gp =
+	static readonly Dictionary<string, string> gp =
 		new Dictionary<string, string>
 		{
 			["Configuration"] = "Debug",
@@ -80,6 +98,11 @@ public class MSBuildGitHashTests
 		var exepath = BuildProject("../../../Data/Sdk1/Proj.csproj");
 		var v = FileVersionInfo.GetVersionInfo(exepath).ProductVersion;
 		Assert.Matches(InfoVersionPattern, v);
+		var asm = Assembly.LoadFile(exepath);
+		var attrs = asm.GetCustomAttributes<AssemblyMetadataAttribute>();
+		var attr = attrs.FirstOrDefault(a => a.Key == "GitRepository");
+		Assert.NotNull(attr);
+		Assert.Equal("https://github.com/MarkPflug/MSBuildGitHash", attr.Value);
 	}
 
 	[Fact]

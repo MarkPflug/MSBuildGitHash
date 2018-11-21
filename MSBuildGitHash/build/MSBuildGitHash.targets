@@ -11,49 +11,28 @@
     Condition="'$(BuildHash)' == ''">
 
     <PropertyGroup>
-      <MSBuildGitHashVersionFile>$(IntermediateOutputPath)gitversion</MSBuildGitHashVersionFile>
-      <MSBuildGitHashRemoteFile>$(IntermediateOutputPath)gitremote</MSBuildGitHashRemoteFile>
-      <MSBuildGitHashRemoteCommand>git remote get-url $(MSBuildGitHashRemote)</MSBuildGitHashRemoteCommand>
       <MSBuildGitRepository
         Condition="'$(MSBuildGitRepository)' == '' And '$(RepositoryType)' == 'git' And '$(RepositoryUrl)' != ''"
       >$(RepositoryUrl)</MSBuildGitRepository>
     </PropertyGroup>
 
     <Exec
-      Command="$(MSBuildGitHashCommand) &gt; $(MSBuildGitHashVersionFile)"
+      Command="$(MSBuildGitHashCommand)"
       IgnoreExitCode="true"
+      ConsoleToMsBuild="true"
     >
       <Output TaskParameter="ExitCode" PropertyName="MSBuildGitHashExitCode" />
+      <Output TaskParameter="ConsoleOutput" ItemName="GitVersion" />
     </Exec>
+
+    <PropertyGroup>
+      <MSBuildGitHash></MSBuildGitHash>
+    </PropertyGroup>
 
     <Error
       Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashExitCode)' != '0'"
       Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
     />
-
-    <Exec
-      Condition="'$(MSBuildGitHashRemote)' != '' And '$(MSBuildGitRepository)' == ''"
-      Command="$(MSBuildGitHashRemoteCommand) &gt; $(MSBuildGitHashRemoteFile)"
-      IgnoreExitCode="true"
-    >
-      <Output TaskParameter="ExitCode" PropertyName="MSBuildGitRemoteExitCode" />
-    </Exec>
-
-    <Error
-      Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashRemote)' != '' And '$(MSBuildGitRemoteExitCode)' != '0'"
-      Text="MSBuildGitHash error executing command $(MSBuildGitHashRemoteCommand) returned error code $(MSBuildGitRemoteExitCode)"
-    />
-
-    <ReadLinesFromFile File="$(MSBuildGitHashVersionFile)">
-      <Output TaskParameter="Lines" ItemName="GitVersion" />
-    </ReadLinesFromFile>
-
-    <ReadLinesFromFile
-      Condition="'$(MSBuildGitHashRemote)' != '' And '$(MSBuildGitRepository)' == '' And Exists('$(MSBuildGitHashRemoteFile)')"
-      File="$(MSBuildGitHashRemoteFile)"
-    >
-      <Output TaskParameter="Lines" ItemName="GitRemote" />
-    </ReadLinesFromFile>
 
     <PropertyGroup>
       <MSBuildGitHashValue Condition="'$(MSBuildGitHashValue)' == ''">@(GitVersion)</MSBuildGitHashValue>
