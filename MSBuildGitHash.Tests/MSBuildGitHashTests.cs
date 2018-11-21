@@ -92,10 +92,12 @@ public class MSBuildGitHashTests
 
 	const string InfoVersionPattern = @"^\d+.\d+.\d+\+[0-9a-f]{7}(-dirty)?$";
 
-	[Fact]
-	public void SdkProjectTest()
+	[Theory]
+	[InlineData("../../../Data/Sdk1/Proj.csproj")]
+	[InlineData("../../../Data/SdkVb/Proj.vbproj")]
+	public void SdkProjectTest(string projectFile)
 	{
-		var exepath = BuildProject("../../../Data/Sdk1/Proj.csproj");
+		var exepath = BuildProject(projectFile);
 		var v = FileVersionInfo.GetVersionInfo(exepath).ProductVersion;
 		Assert.Matches(InfoVersionPattern, v);
 		var asm = Assembly.LoadFile(exepath);

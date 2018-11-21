@@ -1,8 +1,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <GetGitHashBeforeTargets>WriteGitHash</GetGitHashBeforeTargets>
     <IncludeMSBuildGitHashMetadata Condition="'$(IncludeMSBuildGitHashMetadata)' == ''">true</IncludeMSBuildGitHashMetadata>
+    <IncludeMSBuildGitHashInfoVersion Condition="'$(IncludeMSBuildGitHashInfoVersion)' == ''">true</IncludeMSBuildGitHashInfoVersion>
   </PropertyGroup>
 
   <Target
@@ -62,8 +62,7 @@
     Name="GenerateAssemblyVersionAttributes"
     Condition="'$(UsingMicrosoftNETSdk)' != 'true'"
     DependsOnTargets="GetGitHash"
-    >
-
+  >
     <ItemGroup>
       <AssemblyAttributes
         Condition="'$(Version)' != ''"
