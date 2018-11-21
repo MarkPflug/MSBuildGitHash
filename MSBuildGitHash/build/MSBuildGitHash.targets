@@ -7,8 +7,7 @@
 
   <Target
     Name="GetGitHash"
-    BeforeTargets="WriteGitHash;"
-    Condition="'$(BuildHash)' == ''">
+    BeforeTargets="WriteGitHash;GenerateAssemblyInfo">
 
     <PropertyGroup>
       <MSBuildGitRepository
@@ -25,10 +24,6 @@
       <Output TaskParameter="ConsoleOutput" ItemName="GitVersion" />
     </Exec>
 
-    <PropertyGroup>
-      <MSBuildGitHash></MSBuildGitHash>
-    </PropertyGroup>
-
     <Error
       Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashExitCode)' != '0'"
       Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
@@ -36,7 +31,6 @@
 
     <PropertyGroup>
       <MSBuildGitHashValue Condition="'$(MSBuildGitHashValue)' == ''">@(GitVersion)</MSBuildGitHashValue>
-      <MSBuildGitRepository Condition="'$(MSBuildGitRepository)' == ''">@(GitRemote)</MSBuildGitRepository>
       <MSBuildGitHashValueLength>$(MSBuildGitHashValue.Length)</MSBuildGitHashValueLength>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &lt;= 32">$(MSBuildGitHashValue)</MSBuildGitHashValueStart>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &gt; 32">$(MSBuildGitHashValue.Substring(0,32))</MSBuildGitHashValueStart>
@@ -104,7 +98,10 @@
       <MSBuildGitHashAssemblyInfoFile>$(IntermediateOutputPath)MSBuildGitHashAssemblyInfo$(LanguageExt)</MSBuildGitHashAssemblyInfoFile>
     </PropertyGroup>
 
-    <WriteCodeFragment Language="$(CodeGenLanguage)" OutputFile="$(MSBuildGitHashAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
+    <WriteCodeFragment 
+      Language="$(CodeGenLanguage)" 
+      OutputFile="$(MSBuildGitHashAssemblyInfoFile)"
+      AssemblyAttributes="@(AssemblyAttributes)" />
 
     <ItemGroup>
       <Compile

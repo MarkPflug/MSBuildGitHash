@@ -26,16 +26,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Data\**\*" />
-    <None Include="Data\**\*" />
-  </ItemGroup>  
-  
-  <ItemGroup>
-    <Content Remove="Data\*\bin\**" />
-    <EmbeddedResource Remove="Data\*\bin\**" />
-    <None Remove="Data\*\bin\**" />
-    <Content Remove="Data\*\obj\**" />
-    <EmbeddedResource Remove="Data\*\obj\**" />
-    <None Remove="Data\*\obj\**" />
+    <None Include="Data\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-
 </Project>

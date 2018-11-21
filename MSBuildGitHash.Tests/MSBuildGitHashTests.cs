@@ -93,8 +93,8 @@ public class MSBuildGitHashTests
 	const string InfoVersionPattern = @"^\d+.\d+.\d+\+[0-9a-f]{7}(-dirty)?$";
 
 	[Theory]
-	[InlineData("../../../Data/Sdk1/Proj.csproj")]
-	[InlineData("../../../Data/SdkVb/Proj.vbproj")]
+	[InlineData("Data/Sdk1/Proj.csproj")]
+	[InlineData("Data/SdkVb/Proj.vbproj")]
 	public void SdkProjectTest(string projectFile)
 	{
 		var exepath = BuildProject(projectFile);
@@ -110,7 +110,7 @@ public class MSBuildGitHashTests
 	[Fact]
 	public void LegacyProjectTest()
 	{
-		var exepath = BuildProject("../../../Data/Legacy1/Proj.csproj");
+		var exepath = BuildProject("Data/Legacy1/Proj.csproj");
 		var v = FileVersionInfo.GetVersionInfo(exepath).ProductVersion;
 		Assert.Matches(InfoVersionPattern, v);
 	}
