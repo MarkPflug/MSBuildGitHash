@@ -22,6 +22,10 @@ By default, the package will include the output of the command `git describe --l
 ```
 
 ## Version History
+
+_0.5.0_
+- Removed framework dependency from nupkg.
+
 _0.4.1_
 - No functional change.
 - Minor build script cleanup.
