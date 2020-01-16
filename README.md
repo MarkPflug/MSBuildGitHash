@@ -23,6 +23,9 @@ By default, the package will include the output of the command `git describe --l
 
 ## Version History
 
+_0.5.1_ Fix for #15, to allow supression of AssemblyInformationalVersionAttribute.
+- 
+
 _0.5.0_
 - Removed framework dependency from nupkg.
 

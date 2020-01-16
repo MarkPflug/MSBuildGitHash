@@ -41,7 +41,7 @@
       the AssemblyInformationalVersion, this only happens in SDK builds.
       -->
       <SourceRevisionId 
-        Condition="'$(SourceRevisionId)' == '' and '$(UsingMicrosoftNETSdk)' == 'true' AND '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
+        Condition="'$(SourceRevisionId)' == '' And '$(UsingMicrosoftNETSdk)' == 'true' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
         >$(MSBuildGitHashValue)</SourceRevisionId>
     </PropertyGroup>
 
@@ -59,7 +59,7 @@
   >
     <ItemGroup>
       <AssemblyAttributes
-        Condition="'$(Version)' != '' AND '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
+        Condition="'$(Version)' != '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
         Include="System.Reflection.AssemblyInformationalVersionAttribute">
         <_Parameter1>$(Version)+$(MSBuildGitHashValue)</_Parameter1>
       </AssemblyAttributes>
