@@ -27,11 +27,11 @@ By default, the package will include the output of the command `git describe --l
 
 By default, the git hash is appended to the Informational Version attribute value.
 
-Alternatively, the git hash can replace the Informational Version attribute value by setting `MSBuildGitHashReplaceInformationalVersion` to `True` in your .csproj file:
+Alternatively, the git hash can replace the Informational Version attribute value by setting `MSBuildGitHashReplaceInfoVersion` to `True` in your .csproj file:
 
 ```xml
 <PropertyGroup>
-  <MSBuildGitHashReplaceInformationalVersion>True</MSBuildGitHashReplaceInformationalVersion>
+  <MSBuildGitHashReplaceInfoVersion>True</MSBuildGitHashReplaceInfoVersion>
 </PropertyGroup>
 ```
 
