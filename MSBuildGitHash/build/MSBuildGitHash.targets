@@ -3,6 +3,7 @@
   <PropertyGroup>
     <IncludeMSBuildGitHashMetadata Condition="'$(IncludeMSBuildGitHashMetadata)' == ''">true</IncludeMSBuildGitHashMetadata>
     <IncludeMSBuildGitHashInfoVersion Condition="'$(IncludeMSBuildGitHashInfoVersion)' == ''">true</IncludeMSBuildGitHashInfoVersion>
+    <MSBuildGitHashValidateSuccess Condition="$(MSBuildGitHashValidateSuccess) == ''">$(MSBuildGitHashValidate)</MSBuildGitHashValidateSuccess>
   </PropertyGroup>
 
   <Target
@@ -23,14 +24,34 @@
       <Output TaskParameter="ExitCode" PropertyName="MSBuildGitHashExitCode" />
       <Output TaskParameter="ConsoleOutput" ItemName="GitVersion" />
     </Exec>
+    
+    <PropertyGroup>
+      <GitVersion>@(GitVersion)</GitVersion>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(MSBuildGitHashExitCode)' == '0'">
+      <MSBuildGitHashSuccess>True</MSBuildGitHashSuccess>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(MSBuildGitHashExitCode)' != '0'">
+      <MSBuildGitHashSuccess>False</MSBuildGitHashSuccess>
+      <!-- in the event of failure, this would contain an error message, so clear it out. -->
+      <GitVersion></GitVersion>
+      <MSBuildGitHashValidate>false</MSBuildGitHashValidate>
+    </PropertyGroup>
 
     <Error
-      Condition="'$(MSBuildGitHashValidate)' == 'True' And '$(MSBuildGitHashExitCode)' != '0'"
+      Condition="'$(MSBuildGitHashValidateSuccess)' == 'True' And '$(MSBuildGitHashSuccess)' != 'True'"
+      Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
+    />
+
+    <Warning
+      Condition="'$(MSBuildGitHashValidateSuccess)' != 'True' And '$(MSBuildGitHashSuccess)' != 'True'"
       Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
     />
 
     <PropertyGroup>
-      <MSBuildGitHashValue Condition="'$(MSBuildGitHashValue)' == ''">@(GitVersion)</MSBuildGitHashValue>
+      <MSBuildGitHashValue Condition="'$(MSBuildGitHashValue)' == ''">$(GitVersion)</MSBuildGitHashValue>
       <MSBuildGitHashValueLength>$(MSBuildGitHashValue.Length)</MSBuildGitHashValueLength>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &lt;= 32">$(MSBuildGitHashValue)</MSBuildGitHashValueStart>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &gt; 32">$(MSBuildGitHashValue.Substring(0,32))</MSBuildGitHashValueStart>
@@ -55,7 +76,7 @@
     </PropertyGroup>
 
     <Error
-      Condition="'$(MSBuildGitHashValidate)' == 'True' And ($(MSBuildGitHashValueLength) &gt; $(MSBuildGitHashValidateLength) Or '$(MSBuildGitHashRegexMatch)' != 'True')"
+      Condition="'$(MSBuildGitHashExitCode)' == '0' And '$(MSBuildGitHashValidate)' == 'True' And ($(MSBuildGitHashValueLength) &gt; $(MSBuildGitHashValidateLength) Or '$(MSBuildGitHashRegexMatch)' != 'True')"
       Text="MSBuildGitHash hash value starting with '$(MSBuildGitHashValueStart)' was invalid."
     />
 
