@@ -13,11 +13,25 @@ Basic validation is performed on the generated hash version to ensure that a git
 
 ## Customization
 
+### Git hash format
+
 By default, the package will include the output of the command `git describe --long --always --dirty`. This produces a truncation (first 8 hex characters) of the full repository hash. You can customize the command that is executed by defining the `MSBuildGitHashCommand` property in your .csproj file. For example, if you want to include the full hash, you can add the following:
 
 ```xml
 <PropertyGroup>
   <MSBuildGitHashCommand>git rev-parse HEAD</MSBuildGitHashCommand>
+</PropertyGroup>
+```
+
+### Informational Version (aka Product Version) format
+
+By default, the git hash is appended to the Informational Version attribute value.
+
+Alternatively, the git hash can replace the Informational Version attribute value by setting `MSBuildGitHashReplaceInfoVersion` to `True` in your .csproj file:
+
+```xml
+<PropertyGroup>
+  <MSBuildGitHashReplaceInfoVersion>True</MSBuildGitHashReplaceInfoVersion>
 </PropertyGroup>
 ```
 

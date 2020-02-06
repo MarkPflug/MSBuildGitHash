@@ -57,11 +57,16 @@
     Condition="'$(UsingMicrosoftNETSdk)' != 'true'"
     DependsOnTargets="GetGitHash"
   >
+    <PropertyGroup>
+      <MSBuildGitHashVersionAttribute>$(Version)+$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
+      <MSBuildGitHashVersionAttribute Condition="$(MSBuildGitHashReplaceInfoVersion) == 'True'">$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
+    </PropertyGroup>
+
     <ItemGroup>
       <AssemblyAttributes
-        Condition="'$(Version)' != '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
+        Condition="'$(MSBuildGitHashVersionAttribute)' != '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
         Include="System.Reflection.AssemblyInformationalVersionAttribute">
-        <_Parameter1>$(Version)+$(MSBuildGitHashValue)</_Parameter1>
+        <_Parameter1>$(MSBuildGitHashVersionAttribute)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
   </Target>
