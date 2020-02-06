@@ -35,6 +35,7 @@
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &lt;= 32">$(MSBuildGitHashValue)</MSBuildGitHashValueStart>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &gt; 32">$(MSBuildGitHashValue.Substring(0,32))</MSBuildGitHashValueStart>
       <MSBuildGitHashRegexMatch>$([System.Text.RegularExpressions.Regex]::IsMatch($(MSBuildGitHashValue), $(MSBuildGitHashValidateRegex)))</MSBuildGitHashRegexMatch>
+      <MSBuildGitHashIsDirty>$([System.Text.RegularExpressions.Regex]::IsMatch($(MSBuildGitHashValue), $(MSBuildGitHashDirtyRegex)))</MSBuildGitHashIsDirty>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
@@ -53,9 +54,14 @@
       <InformationalVersion>$(MSBuildGitHashValue)</InformationalVersion>
     </PropertyGroup>
 
-      <Error
+    <Error
       Condition="'$(MSBuildGitHashValidate)' == 'True' And ($(MSBuildGitHashValueLength) &gt; $(MSBuildGitHashValidateLength) Or '$(MSBuildGitHashRegexMatch)' != 'True')"
       Text="MSBuildGitHash hash value starting with '$(MSBuildGitHashValueStart)' was invalid."
+    />
+
+    <Warning 
+      Condition="'$(MSBuildGitHashSuppressDirtyWarning)' != 'True' And '$(MSBuildGitHashIsDirty)' == 'True'"
+      Text="MSBuildGitHash: the git version is dirty. You should commit all changes before building, or the assembly versions will be inconsistent."
     />
 
   </Target>

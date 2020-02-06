@@ -37,6 +37,9 @@ Alternatively, the git hash can replace the Informational Version attribute valu
 
 ## Version History
 
+_0.5.3_ 
+- Emits a warning when the repository is dirty. Can be suppressed with `<MSBuildGitHashSuppressDirtyWarning>True`.
+
 _0.5.2_ 
 - Adds ability to replace assembly InformationalVersion via `MSBuildGitHashReplaceInfoVersion`. Thanks @Br3nt
 
