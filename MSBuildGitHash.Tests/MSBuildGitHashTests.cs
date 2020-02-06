@@ -85,12 +85,14 @@ public class MSBuildGitHashTests
 		}
 		Assert.True(restored, "Failed to restore packages");
 		var result = proj.Build(logger);
+		LogProps(proj);
 		var outputPath = proj.GetPropertyValue("TargetPath");
 		Assert.True(result, "Build failed");
 		return outputPath;
 	}
 
 	const string InfoVersionPattern = @"^\d+.\d+.\d+\+[0-9a-f]{7}(-dirty)?$";
+	const string InfoVersionShortPattern = @"^[0-9a-f]{7}(-dirty)?$";
 
 	[Theory]
 	[InlineData("Data/Sdk1/Proj.csproj")]
@@ -105,6 +107,20 @@ public class MSBuildGitHashTests
 		var attr = attrs.FirstOrDefault(a => a.Key == "GitRepository");
 		Assert.NotNull(attr);
 		Assert.Equal("https://github.com/MarkPflug/MSBuildGitHash", attr.Value);
+	}
+
+	[Theory]
+	[InlineData("Data/Legacy2/Proj.csproj")]
+	[InlineData("Data/Sdk2/Proj.csproj")]
+	public void ProjectInfoVersionTest(string projectFile)
+	{
+		var exepath = BuildProject(projectFile);
+		var v = FileVersionInfo.GetVersionInfo(exepath).ProductVersion;
+		Assert.Matches(InfoVersionShortPattern, v);
+		var asm = Assembly.LoadFile(exepath);
+		var attr = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+		Assert.NotNull(attr);
+		Assert.NotNull(attr.InformationalVersion);
 	}
 
 	[Fact]

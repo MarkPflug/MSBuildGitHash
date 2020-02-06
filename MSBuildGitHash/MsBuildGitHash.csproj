@@ -3,7 +3,7 @@
     <!-- we don't compile anything, this is just to satisfy the VS project system / MSBuild -->
     <TargetFrameworks>netstandard1.0</TargetFrameworks>
     <PackageId>MSBuildGitHash</PackageId>
-    <VersionPrefix>0.5.1</VersionPrefix>
+    <VersionPrefix>0.5.2</VersionPrefix>
     <PackageProjectUrl>https://github.com/MarkPflug/MSBuildGitHash</PackageProjectUrl>
     <PackageIconUrl>https://markpflug.github.io/MarkPflug.png</PackageIconUrl>
     <PackageTags>MSBuild Git</PackageTags>

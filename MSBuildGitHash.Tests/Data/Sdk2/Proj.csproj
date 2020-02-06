@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RepositoryUrl>https://github.com/MarkPflug/MSBuildGitHash</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <TargetFramework>net461</TargetFramework>
+    <Version>3.2.1</Version>
+    <OutputType>Exe</OutputType>
+    <MSBuildGitHashReplaceInfoVersion>True</MSBuildGitHashReplaceInfoVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Program.cs"/>
+  </ItemGroup>
+</Project>

@@ -37,6 +37,9 @@ Alternatively, the git hash can replace the Informational Version attribute valu
 
 ## Version History
 
+_0.5.2_ 
+- Adds ability to replace assembly InformationalVersion via `MSBuildGitHashReplaceInfoVersion`. Thanks @Br3nt
+
 _0.5.1_ 
 - Fix for #15, to allow supression of AssemblyInformationalVersionAttribute.
 

@@ -35,17 +35,25 @@
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &lt;= 32">$(MSBuildGitHashValue)</MSBuildGitHashValueStart>
       <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &gt; 32">$(MSBuildGitHashValue.Substring(0,32))</MSBuildGitHashValueStart>
       <MSBuildGitHashRegexMatch>$([System.Text.RegularExpressions.Regex]::IsMatch($(MSBuildGitHashValue), $(MSBuildGitHashValidateRegex)))</MSBuildGitHashRegexMatch>
+    </PropertyGroup>
 
+    <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
       <!-- 
       SourceRevisionId is used by the Microsoft.NET.GenerateAssemblyInfo to populate
       the AssemblyInformationalVersion, this only happens in SDK builds.
       -->
-      <SourceRevisionId 
-        Condition="'$(SourceRevisionId)' == '' And '$(UsingMicrosoftNETSdk)' == 'true' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
+      <SourceRevisionId
+        Condition="'$(SourceRevisionId)' == '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
         >$(MSBuildGitHashValue)</SourceRevisionId>
     </PropertyGroup>
 
-    <Error
+    <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true' And '$(MSBuildGitHashReplaceInfoVersion)' == 'True'">
+      <!-- suppress the sdk handling of informational version when MSBuildGitHashReplaceInfoVersion is set -->
+      <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+      <InformationalVersion>$(MSBuildGitHashValue)</InformationalVersion>
+    </PropertyGroup>
+
+      <Error
       Condition="'$(MSBuildGitHashValidate)' == 'True' And ($(MSBuildGitHashValueLength) &gt; $(MSBuildGitHashValidateLength) Or '$(MSBuildGitHashRegexMatch)' != 'True')"
       Text="MSBuildGitHash hash value starting with '$(MSBuildGitHashValueStart)' was invalid."
     />
@@ -54,12 +62,12 @@
 
   <Target
     Name="GenerateAssemblyVersionAttributes"
-    Condition="'$(UsingMicrosoftNETSdk)' != 'true'"
+    Condition="'$(UsingMicrosoftNETSdk)' != 'True'"
     DependsOnTargets="GetGitHash"
   >
     <PropertyGroup>
       <MSBuildGitHashVersionAttribute>$(Version)+$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
-      <MSBuildGitHashVersionAttribute Condition="$(MSBuildGitHashReplaceInfoVersion) == 'True'">$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
+      <MSBuildGitHashVersionAttribute Condition="'$(MSBuildGitHashReplaceInfoVersion)' == 'True'">$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
     </PropertyGroup>
 
     <ItemGroup>
@@ -70,7 +78,7 @@
       </AssemblyAttributes>
     </ItemGroup>
   </Target>
-
+  
   <Target
     Name="GenerateAssemblyAttributes"
     DependsOnTargets="GetGitHash"
