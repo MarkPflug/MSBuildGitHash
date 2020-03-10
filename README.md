@@ -37,6 +37,9 @@ Alternatively, the git hash can replace the Informational Version attribute valu
 
 ## Version History
 
+_1.0.1_
+- Fixes an issue where git tags would appear in hash version, causing validation failure.
+
 _1.0.0_
 - Adds the ability to disable error when running outside a git repository via `<MSBuildGitHashValidateSuccess>false`. Will emit a warning instead of error in such case.
     Can be specified on MSBuild command line as `/p:MSBuildGitHashValidateSuccess=false` or by setting an environment variable of the same name/value.
