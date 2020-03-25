@@ -36,6 +36,8 @@ Alternatively, the git hash can replace the Informational Version attribute valu
 ```
 
 ## Version History
+_1.0.2_
+- MSBuildGitHash is now properly marked as a development dependency, and so won't show up as a transitive dependency in your package.
 
 _1.0.1_
 - Fixes an issue where git tags would appear in hash version, causing validation failure.
