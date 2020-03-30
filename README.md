@@ -34,6 +34,24 @@ Alternatively, the git hash can replace the Informational Version attribute valu
   <MSBuildGitHashReplaceInfoVersion>True</MSBuildGitHashReplaceInfoVersion>
 </PropertyGroup>
 ```
+### Git describe format
+
+By default, the package will include the output of the command `git describe --tag --abbrev=0` which will produce the last tag name only.  You can customize the command that is executed by defining the `MSBuildGitDescribeCommand` property in your .csproj file.  For example, if you want the entire tag with the 7 hexadecimal digits representing the abbreviated object name, you can do the following:
+
+```xml
+<PropertyGroup>
+  <MSBuildGitDescribeCommand>git describe --tag</MSBuildGitDescribeCommand>
+</PropertyGroup>
+```
+### Assembly version format
+
+By default, this is not overridden. If you would like the `MSBuildGitDescribeCommand` output to override the Assembly Version, then you can do the following:
+
+```xml
+<PropertyGroup>
+  <IncludeMSBuildGitDescribeAssemblyVersion>True</IncludeMSBuildGitDescribeAssemblyVersion>
+</PropertyGroup>
+```
 
 ## Version History
 _1.0.2_
