@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <IncludeMSBuildGitHashMetadata Condition="'$(IncludeMSBuildGitHashMetadata)' == ''">true</IncludeMSBuildGitHashMetadata>
+    <IncludeMSBuildGitDescribeMetadata Condition="'$(IncludeMSBuildGitDescribeMetadata)' == ''">true</IncludeMSBuildGitDescribeMetadata>
     <IncludeMSBuildGitHashInfoVersion Condition="'$(IncludeMSBuildGitHashInfoVersion)' == ''">true</IncludeMSBuildGitHashInfoVersion>
+    <IncludeMSBuildGitDescribeAssemblyVersion Condition="'$(IncludeMSBuildGitDescribeAssemblyVersion)' == ''">false</IncludeMSBuildGitDescribeAssemblyVersion>
     <MSBuildGitHashValidateSuccess Condition="$(MSBuildGitHashValidateSuccess) == ''">$(MSBuildGitHashValidate)</MSBuildGitHashValidateSuccess>
   </PropertyGroup>
 
@@ -88,13 +90,37 @@
   </Target>
 
   <Target
+    Name="GetGitDescribe"
+    BeforeTargets="WriteGitHash;GenerateAssemblyInfo"
+  >
+    <Exec
+      Command="$(MSBuildGitDescribeCommand)"
+      IgnoreExitCode="true"
+      ConsoleToMsBuild="true"
+    >
+      <Output TaskParameter="ExitCode" PropertyName="MSBuildGitDescribeExitCode" />
+      <Output TaskParameter="ConsoleOutput" ItemName="GitDescribe" />
+    </Exec>
+
+    <PropertyGroup>
+      <GitDescribe>@(GitDescribe)</GitDescribe>
+    </PropertyGroup>
+
+    <Error
+      Condition="'$(MSBuildGitDescribeExitCode)' != '0'"
+      Text="MSBuildGitDescribe error executing command $(MSBuildGitDescribeCommand) returned error code $(MSBuildGitDescribeExitCode)"
+    />
+  </Target>
+
+  <Target
     Name="GenerateAssemblyVersionAttributes"
     Condition="'$(UsingMicrosoftNETSdk)' != 'True'"
-    DependsOnTargets="GetGitHash"
+    DependsOnTargets="GetGitHash;GetGitDescribe"
   >
     <PropertyGroup>
       <MSBuildGitHashVersionAttribute>$(Version)+$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
       <MSBuildGitHashVersionAttribute Condition="'$(MSBuildGitHashReplaceInfoVersion)' == 'True'">$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
+      <MSBuildGitDescribeAttribute Condition="'$(GitDescribe)' != ''">$(GitDescribe)</MSBuildGitDescribeAttribute>
     </PropertyGroup>
 
     <ItemGroup>
@@ -103,22 +129,30 @@
         Include="System.Reflection.AssemblyInformationalVersionAttribute">
         <_Parameter1>$(MSBuildGitHashVersionAttribute)</_Parameter1>
       </AssemblyAttributes>
+      <AssemblyAttributes
+        Condition="'$(MSBuildGitDescribeAttribute)' != '' And '$(IncludeMSBuildGitDescribeAssemblyVersion)' == 'true'"
+        Include="System.Reflection.AssemblyVersionAttribute">
+        <_Parameter1>$(MSBuildGitDescribeAttribute)</_Parameter1>
+      </AssemblyAttributes>
     </ItemGroup>
   </Target>
   
   <Target
     Name="GenerateAssemblyAttributes"
-    DependsOnTargets="GetGitHash"
+    DependsOnTargets="GetGitHash;GetGitDescribe"
   >
-    <ItemGroup
-      Condition="'$(IncludeMSBuildGitHashMetadata)' == 'true'"
-    >
-      <AssemblyAttributes Include="AssemblyMetadata">
+    <ItemGroup>
+      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(IncludeMSBuildGitHashMetadata)' == 'true'">
         <_Parameter1>GitHash</_Parameter1>
         <_Parameter2>$(MSBuildGitHashValue)</_Parameter2>
       </AssemblyAttributes>
 
-      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(MSBuildGitRepository)' != ''">
+      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(IncludeMSBuildGitDescribeMetadata)' == 'true'">
+        <_Parameter1>GitDescribe</_Parameter1>
+        <_Parameter2>$(GitDescribe)</_Parameter2>
+      </AssemblyAttributes>
+
+      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(MSBuildGitRepository)' != '' And '$(IncludeMSBuildGitHashMetadata)' == 'true'">
         <_Parameter1>GitRepository</_Parameter1>
         <_Parameter2>$(MSBuildGitRepository)</_Parameter2>
       </AssemblyAttributes>

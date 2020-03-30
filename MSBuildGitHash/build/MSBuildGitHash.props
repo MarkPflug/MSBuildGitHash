@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildGitHashCommand Condition="'$(MSBuildGitHashCommand)' == ''">git describe --long --always --dirty --exclude=* --abbrev=7</MSBuildGitHashCommand>
+    <MSBuildGitDescribeCommand Condition="'$(MSBuildGitDescribeCommand)' == ''">git describe --tag --abbrev=0</MSBuildGitDescribeCommand>
     <MSBuildGitHashValidate>True</MSBuildGitHashValidate>
     <MSBuildGitHashValidateLength>32</MSBuildGitHashValidateLength>
     <MSBuildGitHashValidateRegex>^[0-9A-Fa-f]{4,32}(-dirty|-broken)%3F%24</MSBuildGitHashValidateRegex>
