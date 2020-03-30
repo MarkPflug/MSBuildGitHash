@@ -2,9 +2,7 @@
 
   <PropertyGroup>
     <IncludeMSBuildGitHashMetadata Condition="'$(IncludeMSBuildGitHashMetadata)' == ''">true</IncludeMSBuildGitHashMetadata>
-    <IncludeMSBuildGitDescribeMetadata Condition="'$(IncludeMSBuildGitDescribeMetadata)' == ''">true</IncludeMSBuildGitDescribeMetadata>
     <IncludeMSBuildGitHashInfoVersion Condition="'$(IncludeMSBuildGitHashInfoVersion)' == ''">true</IncludeMSBuildGitHashInfoVersion>
-    <IncludeMSBuildGitDescribeAssemblyVersion Condition="'$(IncludeMSBuildGitDescribeAssemblyVersion)' == ''">false</IncludeMSBuildGitDescribeAssemblyVersion>
     <MSBuildGitHashValidateSuccess Condition="$(MSBuildGitHashValidateSuccess) == ''">$(MSBuildGitHashValidate)</MSBuildGitHashValidateSuccess>
   </PropertyGroup>
 
@@ -120,7 +118,6 @@
     <PropertyGroup>
       <MSBuildGitHashVersionAttribute>$(Version)+$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
       <MSBuildGitHashVersionAttribute Condition="'$(MSBuildGitHashReplaceInfoVersion)' == 'True'">$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
-      <MSBuildGitDescribeAttribute Condition="'$(GitDescribe)' != ''">$(GitDescribe)</MSBuildGitDescribeAttribute>
     </PropertyGroup>
 
     <ItemGroup>
@@ -128,11 +125,6 @@
         Condition="'$(MSBuildGitHashVersionAttribute)' != '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
         Include="System.Reflection.AssemblyInformationalVersionAttribute">
         <_Parameter1>$(MSBuildGitHashVersionAttribute)</_Parameter1>
-      </AssemblyAttributes>
-      <AssemblyAttributes
-        Condition="'$(MSBuildGitDescribeAttribute)' != '' And '$(IncludeMSBuildGitDescribeAssemblyVersion)' == 'true'"
-        Include="System.Reflection.AssemblyVersionAttribute">
-        <_Parameter1>$(MSBuildGitDescribeAttribute)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
   </Target>
@@ -147,7 +139,7 @@
         <_Parameter2>$(MSBuildGitHashValue)</_Parameter2>
       </AssemblyAttributes>
 
-      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(IncludeMSBuildGitDescribeMetadata)' == 'true'">
+      <AssemblyAttributes Include="AssemblyMetadata">
         <_Parameter1>GitDescribe</_Parameter1>
         <_Parameter2>$(GitDescribe)</_Parameter2>
       </AssemblyAttributes>

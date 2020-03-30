@@ -43,15 +43,6 @@ By default, the package will include the output of the command `git describe --t
   <MSBuildGitDescribeCommand>git describe --tag</MSBuildGitDescribeCommand>
 </PropertyGroup>
 ```
-### Assembly version format
-
-By default, this is not overridden. If you would like the `MSBuildGitDescribeCommand` output to override the Assembly Version, then you can do the following:
-
-```xml
-<PropertyGroup>
-  <IncludeMSBuildGitDescribeAssemblyVersion>True</IncludeMSBuildGitDescribeAssemblyVersion>
-</PropertyGroup>
-```
 
 ## Version History
 _1.0.2_
