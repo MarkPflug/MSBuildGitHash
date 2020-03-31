@@ -24,11 +24,11 @@
       <Output TaskParameter="ExitCode" PropertyName="MSBuildGitHashExitCode" />
       <Output TaskParameter="ConsoleOutput" ItemName="GitVersion" />
     </Exec>
-    
+
     <PropertyGroup>
       <GitVersion>@(GitVersion)</GitVersion>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition="'$(MSBuildGitHashExitCode)' == '0'">
       <MSBuildGitHashSuccess>True</MSBuildGitHashSuccess>
     </PropertyGroup>
@@ -80,40 +80,36 @@
       Text="MSBuildGitHash hash value starting with '$(MSBuildGitHashValueStart)' was invalid."
     />
 
-    <Warning 
+    <Warning
       Condition="'$(MSBuildGitHashSuppressDirtyWarning)' != 'True' And '$(MSBuildGitHashIsDirty)' == 'True'"
       Text="MSBuildGitHash: the git version is dirty. You should commit all changes before building, or the assembly versions will be inconsistent."
     />
 
-  </Target>
-
-  <Target
-    Name="GetGitDescribe"
-    BeforeTargets="WriteGitHash;GenerateAssemblyInfo"
-  >
-    <Exec
-      Command="$(MSBuildGitDescribeCommand)"
+    <Exec Command="%(AssemblyEmbed.Command)"
       IgnoreExitCode="true"
       ConsoleToMsBuild="true"
     >
-      <Output TaskParameter="ExitCode" PropertyName="MSBuildGitDescribeExitCode" />
-      <Output TaskParameter="ConsoleOutput" ItemName="GitDescribe" />
+      <Output TaskParameter="ExitCode" PropertyName="MSBuildCustomCommandExitCode" />
+      <Output TaskParameter="ConsoleOutput" ItemName="CustomCommandOutput" />
     </Exec>
 
-    <PropertyGroup>
-      <GitDescribe>@(GitDescribe)</GitDescribe>
-    </PropertyGroup>
-
     <Error
-      Condition="'$(MSBuildGitDescribeExitCode)' != '0'"
-      Text="MSBuildGitDescribe error executing command $(MSBuildGitDescribeCommand) returned error code $(MSBuildGitDescribeExitCode)"
+      Condition="'$(MSBuildCustomCommandExitCode)' != '0'"
+      Text="%(AssemblyEmbed.Identity) error executing command [%(AssemblyEmbed.Command)] returned error code $(MSBuildCustomCommandExitCode)"
     />
+
+    <ItemGroup>
+      <CustomAttribute Include="%(AssemblyEmbed.Identity)">
+        <CustomAttributeValue>@(CustomCommandOutput)</CustomAttributeValue>
+      </CustomAttribute>
+    </ItemGroup>
+
   </Target>
 
   <Target
     Name="GenerateAssemblyVersionAttributes"
     Condition="'$(UsingMicrosoftNETSdk)' != 'True'"
-    DependsOnTargets="GetGitHash;GetGitDescribe"
+    DependsOnTargets="GetGitHash"
   >
     <PropertyGroup>
       <MSBuildGitHashVersionAttribute>$(Version)+$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
@@ -128,25 +124,25 @@
       </AssemblyAttributes>
     </ItemGroup>
   </Target>
-  
+
   <Target
     Name="GenerateAssemblyAttributes"
-    DependsOnTargets="GetGitHash;GetGitDescribe"
+    DependsOnTargets="GetGitHash"
   >
     <ItemGroup>
-      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(IncludeMSBuildGitHashMetadata)' == 'true'">
+      <!--<AssemblyAttributes Include="AssemblyMetadata" Condition="'$(IncludeMSBuildGitHashMetadata)' == 'true'">
         <_Parameter1>GitHash</_Parameter1>
         <_Parameter2>$(MSBuildGitHashValue)</_Parameter2>
-      </AssemblyAttributes>
-
-      <AssemblyAttributes Include="AssemblyMetadata">
-        <_Parameter1>GitDescribe</_Parameter1>
-        <_Parameter2>$(GitDescribe)</_Parameter2>
-      </AssemblyAttributes>
+      </AssemblyAttributes>-->
 
       <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(MSBuildGitRepository)' != '' And '$(IncludeMSBuildGitHashMetadata)' == 'true'">
         <_Parameter1>GitRepository</_Parameter1>
         <_Parameter2>$(MSBuildGitRepository)</_Parameter2>
+      </AssemblyAttributes>
+
+      <AssemblyAttributes Include="AssemblyMetadata">
+        <_Parameter1>%(CustomAttribute.Identity)</_Parameter1>
+        <_Parameter2>%(CustomAttribute.CustomAttributeValue)</_Parameter2>
       </AssemblyAttributes>
     </ItemGroup>
   </Target>
@@ -164,8 +160,8 @@
       <MSBuildGitHashAssemblyInfoFile>$(IntermediateOutputPath)MSBuildGitHashAssemblyInfo$(LanguageExt)</MSBuildGitHashAssemblyInfoFile>
     </PropertyGroup>
 
-    <WriteCodeFragment 
-      Language="$(CodeGenLanguage)" 
+    <WriteCodeFragment
+      Language="$(CodeGenLanguage)"
       OutputFile="$(MSBuildGitHashAssemblyInfoFile)"
       AssemblyAttributes="@(AssemblyAttributes)" />
 
@@ -176,4 +172,5 @@
     </ItemGroup>
 
   </Target>
+
 </Project>
