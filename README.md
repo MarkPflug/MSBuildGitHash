@@ -34,14 +34,26 @@ Alternatively, the git hash can replace the Informational Version attribute valu
   <MSBuildGitHashReplaceInfoVersion>True</MSBuildGitHashReplaceInfoVersion>
 </PropertyGroup>
 ```
-### Git describe format
+### Command Output to Assembly Metadata
 
-By default, the package will include the output of the command `git describe --tag --abbrev=0` which will produce the last tag name only.  You can customize the command that is executed by defining the `MSBuildGitDescribeCommand` property in your .csproj file.  For example, if you want the entire tag with the 7 hexadecimal digits representing the abbreviated object name, you can do the following:
+If there are additional commands and output that are needed to be included in the meta data, you can do so by adding them using `AssemblyEmbed`. Examples:
 
 ```xml
-<PropertyGroup>
-  <MSBuildGitDescribeCommand>git describe --tag</MSBuildGitDescribeCommand>
-</PropertyGroup>
+<AssemblyEmbed Include="KeyNameForOutput">
+  <Command>your command</Command>
+  <ValidationRegex>optional regex to validate output</ValidationRegex>
+</AssemblyEmbed>
+```
+
+```xml
+<ItemGroup>
+  <AssemblyEmbed Include="GitDescription">
+    <Command>git describe</Command>
+  </AssemblyEmbed>
+  <AssemblyEmbed Include="GitTag">
+    <Command>git describe --tag --abbrev=0</Command>
+  </AssemblyEmbed>
+</ItemGroup>
 ```
 
 ## Version History
