@@ -2,8 +2,40 @@
   <PropertyGroup>
     <MSBuildGitHashCommand Condition="'$(MSBuildGitHashCommand)' == ''">git describe --long --always --dirty --exclude=* --abbrev=7</MSBuildGitHashCommand>
     <MSBuildGitHashValidate>True</MSBuildGitHashValidate>
-    <MSBuildGitHashValidateLength>32</MSBuildGitHashValidateLength>
     <MSBuildGitHashValidateRegex>^[0-9A-Fa-f]{4,32}(-dirty|-broken)%3F%24</MSBuildGitHashValidateRegex>
     <MSBuildGitHashDirtyRegex>-dirty</MSBuildGitHashDirtyRegex>
+    <BuildDateTime></BuildDateTime>
   </PropertyGroup>
+  
+  <ItemDefinitionGroup>
+    
+    <AssemblyMetadataCommand>
+      <Value></Value>
+      <ValidateLevel>Warn</ValidateLevel>
+      <Command></Command>
+      <ValidateRegex></ValidateRegex>
+      <OmitOnError>False</OmitOnError>
+    </AssemblyMetadataCommand>
+    
+    <AssemblyMetadata>
+      <Value></Value>
+    </AssemblyMetadata>
+    
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <AssemblyMetadataCommand Include="GitHash">
+      <Command>$(MSBuildGitHashCommand)</Command>
+      <ValidateRegex Condition="'$(MSBuildGitHashValidate)' == 'True'">$(MSBuildGitHashValidateRegex)</ValidateRegex>
+      <ValidateLevel Condition="'$(MSBuildGitHashValidateSuccess)' == True">Error</ValidateLevel>
+      <ValidateLevel Condition="'$(MSBuildGitHashValidateSuccess)' != True">Warn</ValidateLevel>
+    </AssemblyMetadataCommand>
+    <AssemblyMetadataCommand Include="GitDescription">
+      <Command>git describe --tag</Command>
+      <OmitOnError>True</OmitOnError>
+    </AssemblyMetadataCommand>
+    <AssemblyMetadata Include="BuildDateTime">
+      <Value>$([System.DateTime]::UtcNow.ToString('u'))</Value>
+    </AssemblyMetadata>
+  </ItemGroup>
 </Project>

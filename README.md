@@ -39,24 +39,29 @@ Alternatively, the git hash can replace the Informational Version attribute valu
 If there are additional commands and output that are needed to be included in the meta data, you can do so by adding them using `AssemblyEmbed`. Examples:
 
 ```xml
-<AssemblyEmbed Include="KeyNameForOutput">
+<AssemblyMetadataCommand Include="KeyNameForOutput">
   <Command>your command</Command>
   <ValidationRegex>optional regex to validate output</ValidationRegex>
-</AssemblyEmbed>
+</AssemblyMetadataCommand>
 ```
 
 ```xml
 <ItemGroup>
-  <AssemblyEmbed Include="GitDescription">
+  <AssemblyMetadataCommand Include="GitDescription">
     <Command>git describe</Command>
-  </AssemblyEmbed>
-  <AssemblyEmbed Include="GitTag">
+  </AssemblyMetadataCommand>
+  <AssemblyMetadataCommand Include="GitTag">
     <Command>git describe --tag --abbrev=0</Command>
-  </AssemblyEmbed>
+  </AssemblyMetadataCommand>
 </ItemGroup>
 ```
 
 ## Version History
+
+_2.0.0_
+- Significant refactoring to allow more easily adding additional assembly metadata. Thanks [@zhilbug](https://github.com/zhilbug) for the bulk of the work on this.
+- This is a major version, because it has more potential to affect existing builds. Projects that don't include signification build customizations should continue to work without modification.
+
 _1.0.2_
 - MSBuildGitHash is now properly marked as a development dependency, and so won't show up as a transitive dependency in your package.
 
