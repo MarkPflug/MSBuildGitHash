@@ -59,6 +59,7 @@ If there are additional commands and output that are needed to be included in th
 ## Version History
 
 _2.0.0_
+- Now includes the most recent git tag as metadata as well, if the repository has any tags.
 - Significant refactoring to allow more easily adding additional assembly metadata. Thanks [@zhilbug](https://github.com/zhilbug) for the bulk of the work on this.
 - This is a major version, because it has more potential to affect existing builds. Projects that don't include signification build customizations should continue to work without modification.
 
