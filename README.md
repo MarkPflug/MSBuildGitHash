@@ -34,6 +34,27 @@ Alternatively, the git hash can replace the Informational Version attribute valu
   <MSBuildGitHashReplaceInfoVersion>True</MSBuildGitHashReplaceInfoVersion>
 </PropertyGroup>
 ```
+### Command Output to Assembly Metadata
+
+If there are additional commands and output that are needed to be included in the meta data, you can do so by adding them using `AssemblyEmbed`. Examples:
+
+```xml
+<AssemblyEmbed Include="KeyNameForOutput">
+  <Command>your command</Command>
+  <ValidationRegex>optional regex to validate output</ValidationRegex>
+</AssemblyEmbed>
+```
+
+```xml
+<ItemGroup>
+  <AssemblyEmbed Include="GitDescription">
+    <Command>git describe</Command>
+  </AssemblyEmbed>
+  <AssemblyEmbed Include="GitTag">
+    <Command>git describe --tag --abbrev=0</Command>
+  </AssemblyEmbed>
+</ItemGroup>
+```
 
 ## Version History
 _1.0.2_

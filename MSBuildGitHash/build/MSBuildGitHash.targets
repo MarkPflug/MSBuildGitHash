@@ -4,132 +4,139 @@
     <IncludeMSBuildGitHashMetadata Condition="'$(IncludeMSBuildGitHashMetadata)' == ''">true</IncludeMSBuildGitHashMetadata>
     <IncludeMSBuildGitHashInfoVersion Condition="'$(IncludeMSBuildGitHashInfoVersion)' == ''">true</IncludeMSBuildGitHashInfoVersion>
     <MSBuildGitHashValidateSuccess Condition="$(MSBuildGitHashValidateSuccess) == ''">$(MSBuildGitHashValidate)</MSBuildGitHashValidateSuccess>
+    <MSBuildGitRepository Condition="'$(MSBuildGitRepository)' == '' And '$(RepositoryType)' == 'git' And '$(RepositoryUrl)' != ''">$(RepositoryUrl)</MSBuildGitRepository>
   </PropertyGroup>
 
+  <!-- Existing commands to be backwards compatible -->
+  <ItemGroup>
+    <AssemblyEmbed Include="GitHash">
+      <Command>$(MSBuildGitHashCommand)</Command>
+      <ValidationRegex Condition="'$(MSBuildGitHashValidate)' == 'True'">$(MSBuildGitHashValidateRegex)</ValidationRegex>
+    </AssemblyEmbed>
+    <AssemblyEmbed Include="GitRepository">
+      <Command>$(MSBuildGitRepository)</Command>
+    </AssemblyEmbed>
+  </ItemGroup>
+
+  <!-- Execute custom commands for assembly meta data -->
   <Target
-    Name="GetGitHash"
-    BeforeTargets="WriteGitHash;GenerateAssemblyInfo">
-
-    <PropertyGroup>
-      <MSBuildGitRepository
-        Condition="'$(MSBuildGitRepository)' == '' And '$(RepositoryType)' == 'git' And '$(RepositoryUrl)' != ''"
-      >$(RepositoryUrl)</MSBuildGitRepository>
-    </PropertyGroup>
-
-    <Exec
-      Command="$(MSBuildGitHashCommand)"
-      IgnoreExitCode="true"
-      ConsoleToMsBuild="true"
+    Name="CommandBatch"
+    Inputs="@(AssemblyEmbed)"
+    Outputs="%(Identity)"
+    BeforeTargets="WriteGitHash;GenerateAssemblyInfo"
     >
-      <Output TaskParameter="ExitCode" PropertyName="MSBuildGitHashExitCode" />
-      <Output TaskParameter="ConsoleOutput" ItemName="GitVersion" />
+    <Exec
+      Condition="'%(AssemblyEmbed.Command)' != '' And '%(AssemblyEmbed.Identity)' != 'GitRepository'"
+      Command="%(AssemblyEmbed.Command)"
+      ConsoleToMsBuild="true"
+      IgnoreExitCode="true"
+      >
+      <Output PropertyName="ConsoleOutput" TaskParameter="ConsoleOutput"/>
+      <Output PropertyName="ExitCode" TaskParameter="ExitCode"/>
     </Exec>
-    
-    <PropertyGroup>
-      <GitVersion>@(GitVersion)</GitVersion>
-    </PropertyGroup>
-    
-    <PropertyGroup Condition="'$(MSBuildGitHashExitCode)' == '0'">
-      <MSBuildGitHashSuccess>True</MSBuildGitHashSuccess>
-    </PropertyGroup>
 
-    <PropertyGroup Condition="'$(MSBuildGitHashExitCode)' != '0'">
-      <MSBuildGitHashSuccess>False</MSBuildGitHashSuccess>
-      <!-- in the event of failure, this would contain an error message, so clear it out. -->
-      <GitVersion></GitVersion>
-      <MSBuildGitHashValidate>false</MSBuildGitHashValidate>
-    </PropertyGroup>
-
-    <Error
-      Condition="'$(MSBuildGitHashValidateSuccess)' == 'True' And '$(MSBuildGitHashSuccess)' != 'True'"
-      Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
-    />
-
-    <Warning
-      Condition="'$(MSBuildGitHashValidateSuccess)' != 'True' And '$(MSBuildGitHashSuccess)' != 'True'"
-      Text="MSBuildGitHash error executing command $(MSBuildGitHashCommand) returned error code $(MSBuildGitHashExitCode)"
-    />
+    <ItemGroup>
+      <AssemblyEmbed Update="%(AssemblyEmbed.Identity)">
+        <ValidationRegex Condition="'%(AssemblyEmbed.ValidationRegex)' == ''"></ValidationRegex>
+        <ConsoleOutput>$(ConsoleOutput)</ConsoleOutput>
+        <ExitCode>$(ExitCode)</ExitCode>
+      </AssemblyEmbed>
+    </ItemGroup>
 
     <PropertyGroup>
-      <MSBuildGitHashValue Condition="'$(MSBuildGitHashValue)' == ''">$(GitVersion)</MSBuildGitHashValue>
-      <MSBuildGitHashValueLength>$(MSBuildGitHashValue.Length)</MSBuildGitHashValueLength>
-      <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &lt;= 32">$(MSBuildGitHashValue)</MSBuildGitHashValueStart>
-      <MSBuildGitHashValueStart Condition="$(MSBuildGitHashValue.Length) &gt; 32">$(MSBuildGitHashValue.Substring(0,32))</MSBuildGitHashValueStart>
-      <MSBuildGitHashRegexMatch>$([System.Text.RegularExpressions.Regex]::IsMatch($(MSBuildGitHashValue), $(MSBuildGitHashValidateRegex)))</MSBuildGitHashRegexMatch>
-      <MSBuildGitHashIsDirty>$([System.Text.RegularExpressions.Regex]::IsMatch($(MSBuildGitHashValue), $(MSBuildGitHashDirtyRegex)))</MSBuildGitHashIsDirty>
+      <MSBuildGitHashVersionAttribute>$(Version)+$(ConsoleOutput)</MSBuildGitHashVersionAttribute>
+      <MSBuildGitHashVersionAttribute Condition="'$(MSBuildGitHashReplaceInfoVersion)' == 'True'">$(ConsoleOutput)</MSBuildGitHashVersionAttribute>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true'">
+      <Filtered Condition="'%(AssemblyEmbed.Identity)' == 'GitHash'"/>
       <!-- 
-      SourceRevisionId is used by the Microsoft.NET.GenerateAssemblyInfo to populate
-      the AssemblyInformationalVersion, this only happens in SDK builds.
-      -->
-      <SourceRevisionId
-        Condition="'$(SourceRevisionId)' == '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
-        >$(MSBuildGitHashValue)</SourceRevisionId>
-    </PropertyGroup>
+          SourceRevisionId is used by the Microsoft.NET.GenerateAssemblyInfo to populate
+          the AssemblyInformationalVersion, this only happens in SDK builds.
+          -->
+      <SourceRevisionId Condition="'$(SourceRevisionId)' == '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'">
+        $(ConsoleOutput)
+      </SourceRevisionId>
 
-    <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true' And '$(MSBuildGitHashReplaceInfoVersion)' == 'True'">
       <!-- suppress the sdk handling of informational version when MSBuildGitHashReplaceInfoVersion is set -->
-      <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-      <InformationalVersion>$(MSBuildGitHashValue)</InformationalVersion>
+      <IncludeSourceRevisionInInformationalVersion Condition="'$(MSBuildGitHashReplaceInfoVersion)' == 'True'">
+        false
+      </IncludeSourceRevisionInInformationalVersion>
+      <InformationalVersion Condition="'$(MSBuildGitHashReplaceInfoVersion)' == 'True'">
+        $(ConsoleOutput)
+      </InformationalVersion>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Validate outputs from target command batch -->
+  <Target
+    Name="ValidateOutput"
+    DependsOnTargets="CommandBatch"
+   >
+    <Error
+     Condition="'%(AssemblyEmbed.ValidationRegex)' != '' And '%(AssemblyEmbed.ExitCode)' != '0'"
+     Text="%(AssemblyEmbed.Identity) error executing command %(Command) returned error code %(ExitCode)"
+    />
+
+    <Warning
+      Condition="'%(AssemblyEmbed.ValidationRegex)' == '' And '%(AssemblyEmbed.ExitCode)' != '0' And '%(AssemblyEmbed.Identity)' != 'GitRepository'"
+      Text="%(AssemblyEmbed.Identity) error executing command %(AssemblyEmbed.Command) returned error code %(ExitCode)"
+    />
+
+    <PropertyGroup>
+      <Filtered Condition="'%(AssemblyEmbed.ConsoleOutput)' != '' And '%(AssemblyEmbed.ExitCode)' == '0' And '%(AssemblyEmbed.ValidationRegex)' != ''"/>
+      <OutputValue>%(AssemblyEmbed.ConsoleOutput)</OutputValue>
+      <OutputLength>$(OutputValue.Length)</OutputLength>
+      <Regex>%(AssemblyEmbed.ValidationRegex)</Regex>
+      <OutputValueStart Condition="'%(AssemblyEmbed.Identity)' == 'GitHash' And $(OutputLength) &lt;= 32">$(OutputValue)</OutputValueStart>
+      <OutputValueStart Condition="'%(AssemblyEmbed.Identity)' == 'GitHash' And $(OutputLength) &gt; 32">$(OutputValue.Substring(0,32))</OutputValueStart>
+      <MSBuildGitHashIsDirty Condition="'%(AssemblyEmbed.Identity)' == 'GitHash'">$([System.Text.RegularExpressions.Regex]::IsMatch($(OutputValue), $(MSBuildGitHashDirtyRegex)))</MSBuildGitHashIsDirty>
+      <OutputRegexMatch>$([System.Text.RegularExpressions.Regex]::IsMatch($(OutputValue), $(Regex)))</OutputRegexMatch>
     </PropertyGroup>
 
     <Error
-      Condition="'$(MSBuildGitHashExitCode)' == '0' And '$(MSBuildGitHashValidate)' == 'True' And ($(MSBuildGitHashValueLength) &gt; $(MSBuildGitHashValidateLength) Or '$(MSBuildGitHashRegexMatch)' != 'True')"
-      Text="MSBuildGitHash hash value starting with '$(MSBuildGitHashValueStart)' was invalid."
+      Condition="'%(AssemblyEmbed.ValidationRegex)' != '' And '%(AssemblyEmbed.Identity)' == 'GitHash' And ($(OutputLength) &gt; $(OutputLength) Or '$(OutputRegexMatch)' != 'True')"
+      Text="%(AssemblyEmbed.Identity) output value starting with '$(OutputValueStart)' was invalid."
     />
 
-    <Warning 
-      Condition="'$(MSBuildGitHashSuppressDirtyWarning)' != 'True' And '$(MSBuildGitHashIsDirty)' == 'True'"
-      Text="MSBuildGitHash: the git version is dirty. You should commit all changes before building, or the assembly versions will be inconsistent."
+    <Warning
+      Condition="'%(AssemblyEmbed.Identity)' == 'GitHash' And '$(MSBuildGitHashSuppressDirtyWarning)' != 'True' And '$(MSBuildGitHashIsDirty)' == 'True'"
+      Text="%(AssemblyEmbed.Identity): the git version is dirty. You should commit all changes before building, or the assembly versions will be inconsistent."
+    />
+
+    <Error
+      Condition="'%(AssemblyEmbed.ValidationRegex)' != '' And '%(AssemblyEmbed.Identity)' != 'GitHash' And '$(OutputRegexMatch)' != 'True'"
+      Text="%(AssemblyEmbed.Identity) output value failed regular expression comparison [%(AssemblyEmbed.ValidationRegex)]."
     />
 
   </Target>
 
+  <!-- Apply commands output to assembly meta data -->
   <Target
-    Name="GenerateAssemblyVersionAttributes"
-    Condition="'$(UsingMicrosoftNETSdk)' != 'True'"
-    DependsOnTargets="GetGitHash"
+    Name="GenerateAssemblyAttributes"
+    DependsOnTargets="ValidateOutput"
   >
-    <PropertyGroup>
-      <MSBuildGitHashVersionAttribute>$(Version)+$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
-      <MSBuildGitHashVersionAttribute Condition="'$(MSBuildGitHashReplaceInfoVersion)' == 'True'">$(MSBuildGitHashValue)</MSBuildGitHashVersionAttribute>
-    </PropertyGroup>
-
     <ItemGroup>
+      <AssemblyAttributes Include="AssemblyMetadata">
+        <_Parameter1>%(AssemblyEmbed.Identity)</_Parameter1>
+        <_Parameter2>%(AssemblyEmbed.ConsoleOutput)</_Parameter2>
+      </AssemblyAttributes>
+
       <AssemblyAttributes
         Condition="'$(MSBuildGitHashVersionAttribute)' != '' And '$(IncludeMSBuildGitHashInfoVersion)' == 'true'"
-        Include="System.Reflection.AssemblyInformationalVersionAttribute">
+        Include="System.Reflection.AssemblyInformationalVersionAttribute"
+      >
         <_Parameter1>$(MSBuildGitHashVersionAttribute)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
   </Target>
-  
-  <Target
-    Name="GenerateAssemblyAttributes"
-    DependsOnTargets="GetGitHash"
-  >
-    <ItemGroup
-      Condition="'$(IncludeMSBuildGitHashMetadata)' == 'true'"
-    >
-      <AssemblyAttributes Include="AssemblyMetadata">
-        <_Parameter1>GitHash</_Parameter1>
-        <_Parameter2>$(MSBuildGitHashValue)</_Parameter2>
-      </AssemblyAttributes>
 
-      <AssemblyAttributes Include="AssemblyMetadata" Condition="'$(MSBuildGitRepository)' != ''">
-        <_Parameter1>GitRepository</_Parameter1>
-        <_Parameter2>$(MSBuildGitRepository)</_Parameter2>
-      </AssemblyAttributes>
-    </ItemGroup>
-  </Target>
-
+  <!-- Write the git hash to assembly info file -->
   <Target
     Name="WriteGitHash"
-    DependsOnTargets="GenerateAssemblyAttributes;GenerateAssemblyVersionAttributes"
-    BeforeTargets="CoreCompile">
-
+    DependsOnTargets="GenerateAssemblyAttributes"
+    BeforeTargets="CoreCompile"
+  >
     <PropertyGroup>
       <LanguageExt Condition="'$(Language)' == 'C#'">.cs</LanguageExt>
       <LanguageExt Condition="'$(Language)' == 'VB'">.vb</LanguageExt>
@@ -138,8 +145,8 @@
       <MSBuildGitHashAssemblyInfoFile>$(IntermediateOutputPath)MSBuildGitHashAssemblyInfo$(LanguageExt)</MSBuildGitHashAssemblyInfoFile>
     </PropertyGroup>
 
-    <WriteCodeFragment 
-      Language="$(CodeGenLanguage)" 
+    <WriteCodeFragment
+      Language="$(CodeGenLanguage)"
       OutputFile="$(MSBuildGitHashAssemblyInfoFile)"
       AssemblyAttributes="@(AssemblyAttributes)" />
 
@@ -148,6 +155,5 @@
         Include="$(MSBuildGitHashAssemblyInfoFile)"
         Condition="Exists('$(MSBuildGitHashAssemblyInfoFile)')" />
     </ItemGroup>
-
   </Target>
 </Project>
