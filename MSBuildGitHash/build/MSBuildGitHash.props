@@ -33,9 +33,6 @@
     <AssemblyMetadataCommand Include="GitDescription">
       <Command>git describe --tag</Command>
       <OmitOnError>True</OmitOnError>
-    </AssemblyMetadataCommand>
-    <AssemblyMetadata Include="BuildDateTime">
-      <Value>$([System.DateTime]::UtcNow.ToString('u'))</Value>
-    </AssemblyMetadata>
+    </AssemblyMetadataCommand>   
   </ItemGroup>
 </Project>
