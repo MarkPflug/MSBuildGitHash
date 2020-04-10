@@ -98,7 +98,7 @@
     </PropertyGroup>
 
     <Warning 
-      Condition="$(MSBuildGitHashIsDirty) == 'True'"
+      Condition="$(MSBuildGitHashIsDirty) == 'True' And $(MSBuildGitHashSuppressDirtyWarning) != 'True'"
       Text="MSBuildGitHash: the git version is dirty. You should commit all changes before building, or the assembly versions will be inconsistent."
     />
 

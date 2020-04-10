@@ -58,6 +58,9 @@ If there are additional commands and output that are needed to be included in th
 
 ## Version History
 
+_2.0.1_
+- Restores the ability to use `MSBuildGitHashSuppressDirtyWarning` to suppress warnings that was lost during the 2.0 refactor.
+
 _2.0.0_
 - Now includes the most recent git tag as metadata as well, if the repository has any tags.
 - Significant refactoring to allow more easily adding additional assembly metadata. Thanks [@zhilbug](https://github.com/zhilbug) for the bulk of the work on this.

@@ -3,8 +3,7 @@
     <MSBuildGitHashCommand Condition="'$(MSBuildGitHashCommand)' == ''">git describe --long --always --dirty --exclude=* --abbrev=7</MSBuildGitHashCommand>
     <MSBuildGitHashValidate>True</MSBuildGitHashValidate>
     <MSBuildGitHashValidateRegex>^[0-9A-Fa-f]{4,32}(-dirty|-broken)%3F%24</MSBuildGitHashValidateRegex>
-    <MSBuildGitHashDirtyRegex>-dirty</MSBuildGitHashDirtyRegex>
-    <BuildDateTime></BuildDateTime>
+    <MSBuildGitHashDirtyRegex>-dirty</MSBuildGitHashDirtyRegex>  
   </PropertyGroup>
   
   <ItemDefinitionGroup>
