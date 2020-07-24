@@ -57,6 +57,8 @@ If there are additional commands and output that are needed to be included in th
 ```
 
 ## Version History
+_2.0.2_
+- Fix issues introduced by changes from the Microsoft.NET.Sdk.
 
 _2.0.1_
 - Restores the ability to use `MSBuildGitHashSuppressDirtyWarning` to suppress warnings that was lost during the 2.0 refactor.
