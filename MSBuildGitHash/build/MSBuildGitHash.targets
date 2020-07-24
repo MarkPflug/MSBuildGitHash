@@ -70,7 +70,7 @@
   <Target
     Name="GetGitHash"
     DependsOnTargets="RunAssemblyMetadataCommand"
-    BeforeTargets="WriteGitHash;GenerateAssemblyInfo">
+    BeforeTargets="WriteGitHash;GenerateAssemblyInfo;AddSourceRevisionToInformationalVersion">
 
     <PropertyGroup>
       <MSBuildGitHashValue Condition="%(AssemblyMetadata.Identity) == 'GitHash'">%(AssemblyMetadata.Value)</MSBuildGitHashValue>
@@ -89,6 +89,7 @@
 
     <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' == 'true' And '$(MSBuildGitHashReplaceInfoVersion)' == 'True'">
       <!-- suppress the sdk handling of informational version when MSBuildGitHashReplaceInfoVersion is set -->
+      <SourceRevisionId></SourceRevisionId>
       <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
       <InformationalVersion Condition="'%(AssemblyMetadata.Identity)' == 'GitHash'">%(Value)</InformationalVersion>
     </PropertyGroup>
