@@ -56,6 +56,17 @@ If there are additional commands and output that are needed to be included in th
 </ItemGroup>
 ```
 
+### Extract Assembly Metadata
+
+```csharp
+using System.Reflection;
+
+string gitHash = Assembly
+	.GetEntryAssembly()
+	.GetCustomAttributes<AssemblyMetadataAttribute>()
+	.FirstOrDefault(attr => attr.Key == "GitHash")?.Value;
+```
+
 ## Version History
 _2.0.2_
 - Fix issues introduced by changes from the Microsoft.NET.Sdk.
