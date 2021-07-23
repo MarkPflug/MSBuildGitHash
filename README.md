@@ -67,6 +67,12 @@ string gitHash = Assembly
 	.FirstOrDefault(attr => attr.Key == "GitHash")?.Value;
 ```
 
+### Help, it doesn't work
+
+MSBuildGitHash only works with [SDK style based projects](https://docs.microsoft.com/en-us/dotnet/core/project-sdk/overview). These can be both .NET Framework (legacy) and .NET (Core).
+
+Possible alternatives are discussed in [this issue](https://github.com/MarkPflug/MSBuildGitHash/issues/29). It also includes info about custom/multiple/combined formats.
+
 ## Version History
 _2.0.2_
 - Fix issues introduced by changes from the Microsoft.NET.Sdk.
