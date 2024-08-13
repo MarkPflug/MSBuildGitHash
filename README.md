@@ -23,6 +23,16 @@ By default, the package will include the output of the command `git describe --l
 </PropertyGroup>
 ```
 
+### Git hash length
+
+Some IDEs and also DevOps platforms show first 8 hex characters. To change the default length from 7 hex characters to 8 hex characters you can add the following:
+
+```xml
+<PropertyGroup>
+  <MSBuildGitHashCommand>git describe --long --always --dirty --exclude=* --abbrev=8</MSBuildGitHashCommand>
+</PropertyGroup>
+```
+
 ### Informational Version (aka Product Version) format
 
 By default, the git hash is appended to the Informational Version attribute value.
